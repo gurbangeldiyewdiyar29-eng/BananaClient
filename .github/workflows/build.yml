@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -28,6 +28,10 @@ jobs:
 
       - name: Extract ZIP
         run: unzip -q BananaClient-1.21.4-Articraft.zip
+
+      - name: Fix rename in temporary copy
+        run: |
+          sed -i 's/rename "${it}_${project.archivesBaseName}"/rename { "${it}_${project.archivesBaseName}" }/' BananaClient-1.21.4/build.gradle
 
       - name: Build JAR
         run: |
