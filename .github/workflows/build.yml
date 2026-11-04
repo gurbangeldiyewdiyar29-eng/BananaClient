@@ -1,33 +1,43 @@
+
 name: BananaClient Build
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.5'
 
       - name: Extract ZIP
-        run: unzip 'BananaClient-1.21.4-Articraft.zip' -d source
+        run: unzip -q BananaClient-1.21.4-Articraft.zip
 
       - name: Build JAR
         run: |
-          cd source/BananaClient-1.21.4
+          cd BananaClient-1.21.4
           gradle build
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
         with:
           name: BananaClient-JAR
-          path: source/BananaClient-1.21.4/build/libs/*.jar
+          path: BananaClient-1.21.4/build/libs/*.jar
+          if-no-files-found: error
+          
