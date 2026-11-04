@@ -21,22 +21,19 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.5'
-
       - name: Extract ZIP
         run: unzip -q BananaClient-1.21.4-Articraft.zip
 
-      - name: Fix rename in temporary copy
+      - name: Fix build.gradle in temporary copy
         run: |
           sed -i 's/rename "${it}_${project.archivesBaseName}"/rename { "${it}_${project.archivesBaseName}" }/' BananaClient-1.21.4/build.gradle
+          sed -i "s/1.5-SNAPSHOT/1.9.2/" BananaClient-1.21.4/build.gradle
 
       - name: Build JAR
         run: |
           cd BananaClient-1.21.4
-          gradle build
+          gradle wrapper --gradle-version 8.11
+          ./gradlew build
 
       - name: Upload JAR
         uses: actions/upload-artifact@v4
